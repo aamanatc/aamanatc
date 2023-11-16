@@ -1,10 +1,24 @@
 
 ###Project C: Geography and Evolutionary Diversification
-###Introduction 
+
+#I would encourage you to organize your file and divide each section by adding 3 or more hashtags at the beginning and the end of you title.
+
+####Introduction#### 
 
 ###The Danio genus, a group of freshwater fish that originate from South and Southeast Asia, like India has captivated scientists, fish enthusiasts and geneticists alike due, to its diversity and ability to thrive in different aquatic environments(1). These small charming fish, including the known zebrafish (Danio rerio) have not only become popular additions to our aquariums but have also played a significant role in scientific research. One of the tools used to unravel the evolutionary mysteries surrounding Danio species is the Cytochrome c Oxidase subunit I (COI) gene(2). COI, which is found in mitochondria is highly regarded for its function as both a powerhouse and a molecular barcode(3). This makes it an invaluable resource for studying phylogenetics and evolutionary biology(3). With this gene, as our compass we embark on a journey to comprehend the geographical factors that have shaped the evolutionary fate of Danio species. Through this exploration we hope to shed light on their tapestry of life.
 
 ###Our main objective, for this project is to investigate how genetic data and geographic factors interact in the diversification of Danio species. Specifically, we plan to use the COI gene as a tool to create trees that reveal the evolutionary relationships among different Danio species. These phylogenetic trees will provide insights into the history of Danio. By combining data with information, we aim to answer important questions about how geography influences diversification and whether closely related species tend to inhabit the same geographic areas or if their evolution has been driven by large scale separation. Through this study we hope to uncover the connections, within the Danio genus and contribute to our understanding of speciation and evolutionary diversification on a scale.
+
+#How does it sound to you if I suggest you to set up your directory just after your introduction?
+##### Set up directory ####
+#set up specific directory in porder to save my data into.
+setwd("/Users/alireza/Desktop/Bioinformatic/Assignments /#2/Assignment 2")
+#investigating current work directory path 
+getwd()
+
+##### Loading necessary packages ####
+
+#Hey there! I just wanted to share a suggestion that might make your code a bit more accurate and organized. In my opinion, it would be helpful to allocate one section of your code for loading and adding necessary packages before diving into your main code. What do you think? Therefore, in the following lines, I will replace the package code from the main part to this beginning part:
 
 #Install the rentrez package
 install.packages("rentrez")
@@ -19,9 +33,56 @@ library("rentrez")
 library("seqinr")
 library("Biostrings")
 library("tidyverse")
+#loading dplyr package 
+library(dplyr)
+#installing required packages 
+install.packages("ape")
+#loading ape() package 
+library(ape)
+#installing required packages for DECIPHER
+install.packages("RSQLite") 
+#loading the package 
+library(RSQLite)
+#install Biocmanager to do tasks related to sequences 
+install.packages("BiocManager")
+#library the package 
+library(BiocManager)
+#Then, install any needed packages. for alignment and clustering 
+BiocManager::install(c("Biostrings", "muscle", "msa", "DECIPHER"))
+#Load libraries
+library(Biostrings)
+library(muscle)
+library(DECIPHER)
+#install required package 
+install.packages("phangorn")
+#load the library
+library(phangorn)
+#install required package
+install.packages("ggplot2")
+#load the library 
+library("ggplot2")
+#install required package
+BiocManager::install("ggtree")
+#circular phylogram 
+library(ggtree)
+#install packages 
+install.packages("phytools")
+#load the package
+library(phytools)
+#install the package
+install.packages("maps")
+#load the package 
+library(maps)
+#loading by library 
+library(mapdata)
+
+#Also, you can merge all the aforementioned packages installation lines into one line of code:
+install.packages(c("rentrez", "seqinr", "Biostrings", "tidyverse", "ape", "RSQLite", "BiocManager", "phangorn", "ggplot2", "ggtree", "phytools", "maps"))
+
+##### Main Codes ####
 #performing the search in pubmed by searching the phylum 
 search.res.danio <- entrez_search(db = "pubmed", term = "Danio")
-#now lets see how the classification of teh result 
+#now lets see how the classification of teh result (the result)
 class(search.res.danio)
 #see the hits resulted 
 search.res.danio
@@ -33,6 +94,9 @@ class(search.res.danio$ids)
 length(search.res.danio$ids)
 #as there are just 20 which is because of default retmax rate so we need to change the retmax since it limit the number of records returned by by the search 
 #using to see what are the availbale contents to be searched under "nuccore" to identify the abbreviation using for search.
+
+#I just wanted to suggest you, maybe it would be good idea if you explain why you used pubmed as the data base, because I myself, unfortunately, cannot understand why you start with pubmed, and then you continued with "nuccore"
+
 entrez_db_searchable("nuccore")
 #performing the search in pubmed based on nucleotide data base and using phoronis in terms of genus searching 
 danio_search <- entrez_search(db="nuccore", term = "Danio[ORGN]")
@@ -58,10 +122,7 @@ COI_fetch <- entrez_fetch(db = "nuccore", id = danio_search.COI$ids, rettype = "
 class(COI_fetch)
 #quick data inspection to get a sense of what the data looks like without displaying the entire dataset.
 head(COI_fetch)
-#set up specific directory in porder to save my data into.
-setwd("/Users/alireza/Desktop/Bioinformatic/Assignments /#2/Assignment 2")
-#investigating current work directory path 
-getwd()
+
 #write my file in specific working directory as set up earlier, and keep copy of that!
 write(COI_fetch, "COI_fetch.fasta", sep = "\n")
 #After checking the length of the data and making sure that we haven't downloaded WGS by mistake. we need to read data!
@@ -75,11 +136,9 @@ dfCOI <- data.frame(COI_title = names(COI.stringset), COI_sequence = paste(COI.s
 #lets see how it looks like!
 view(dfCOI)
 
-
 #the first column from our data frame indicate that the names are not very clear and nice! So, I decided to add another column to my dfCOI, named Species_name 
 #to achieve this, we can use dplyr package to run pipe line
-#loading dplyr package 
-library(dplyr)
+
 #Use the pipe operator (%) to apply a sequence of operations
 dfCOI <- dfCOI %>%
 # First, use the mutate function to create a new column "Species_Name"
@@ -89,27 +148,23 @@ dfCOI <- dfCOI %>%
   select(COI_title, species_name, COI_sequence) %>%
 # view the ultimate data frame 
   view()
+# I would like to suggest you to use a function for the five previous lines, as this process will be iterate in part c, for the data from NCBI:
+processDataFrame <- function(input_df) {
+  result_df <- input_df %>%
+    # First, use the mutate function to create a new column "Species_Name"
+    # This new column extracts words 2 to 3 from the "COI_Title" column
+    mutate(species_name = word(COI_title, 2L, 3L)) %>%
+    # Finally, use the select function to rearrange the columns as specified
+    select(COI_title, species_name, COI_sequence)
+  
+  return(result_df)
+}
+dfCOI <- processDataFrame(dfCOI)
+
+
 unique(dfCOI$species_name)
 #Afterward, the data needs to be cleared up regarding alignment; so some packages needs to be installed, followed by loading them.
-#installing required packages 
-install.packages("ape")
-#loading ape() package 
-library(ape)
-#installing required packages for DECIPHER
-install.packages("RSQLite") 
-#loading the package 
-library(RSQLite)
-#install Biocmanager to do tasks related to sequences 
-install.packages("BiocManager")
-#library the package 
-library(BiocManager)
 
-#Then, install any needed packages. for alignment and clustering 
-BiocManager::install(c("Biostrings", "muscle", "msa", "DECIPHER"))
-#Load libraries
-library(Biostrings)
-library(muscle)
-library(DECIPHER)
 #lets take a looka at to the summmary of the sequence lengths
 summary(nchar(dfCOI$COI_sequence))
 #using histogram to show the frequency of their length 
@@ -118,7 +173,7 @@ hist(x)
 #the frequency shows good result as most of them are more than 650bp
 #we need to also put accession ID as a column as it is likely for species_name to be repeated thorugh the data.
 dfCOI <- dfCOI %>%
-  ## This command extracts first words from the "COI_Title" column then name the column as asccession.id
+## This command extracts first words from the "COI_Title" column then name the column as asccession.id
   mutate(accession.id = word(COI_title, 1L)) %>%
   #selecting the useful columns 
   select(accession.id, COI_title, species_name, COI_sequence) %>%
@@ -198,18 +253,6 @@ dfCOI.cluster <- DECIPHER::TreeLine(myDistMatrix = distanceMatrix,
                                   verbose = TRUE)
 
 #figure 2: circular phylogram
-#install required package 
-install.packages("phangorn")
-#load the library
-library(phangorn)
-#install required package
-install.packages("ggplot2")
-#load the library 
-library("ggplot2")
-#install required package
-BiocManager::install("ggtree")
-#load the package 
-library("ggtree")
 #make a matrix and assign it matrix.COI.alignment
 matrix.COI.alignment <- as.matrix(distanceMatrix)
 #making a tree with neighbor joining method 
@@ -218,8 +261,7 @@ tree.ape <- nj(matrix.COI.alignment)
 class(dna.bin.COI.alignment)
 #review the tip labels and internals nodes of the tree
 tree.ape
-#circular phylogram 
-library(ggtree)
+
 #The provided R code using the ggtree package creates a circular phylogenetic tree plot from the tree.ape object. It suppresses the legend with theme_tree2(legend.position = "none"), and labels the tree tips with geom_tiplab(align = TRUE, size = 2). The resulting tree_plot variable stores the tree plot with these customization for visualization and analysis of phylogenetic relationships in a circular layout.
 tree_plot <- ggtree(tree.ape, layout = "circular") + 
   theme_tree2(legend.position = "none") +
@@ -251,6 +293,11 @@ dfpho.COI.geo <- dfpho %>%
   select(species_name, lat, lon) %>%
   #review the resulted data frame 
   view()
+#In this part of you analysis, I think you should add add one more filter to exclude rows with zero latitude and longitude. In this way, this filter ensures that only raws with validate geographic coordinates are are included in further analysis:
+dfpho.COI.geo <- dfpho %>%
+  filter(markercode=="COI-5P" & !is.na(lat) & !is.na(lon) & lat!=0 & lon!=0) %>%
+  select(species_name,lat,lon) %>%
+  view()
 #lets see the unique species in their column
 unique(dfpho.COI.geo$species_name)
 #see the sequences classification 
@@ -259,7 +306,7 @@ class(dfCOI$COI_sequence)
 dfCOI$COI_sequence <- as.character(dfCOI$COI_sequence)
 
 #preparing data from NCBI regarding merging to data from BOLD
-#c the data from, NCBI 
+#c the data from, NCBI
   dfCOI.V2 <- dfCOI %>%
   # First, use the mutate function to create a new column "Species_Name"
   # This command extracts second words   from the "COI_Title" column
@@ -269,7 +316,9 @@ dfCOI$COI_sequence <- as.character(dfCOI$COI_sequence)
   filter(!is.na(species_name))%>%
   # view the ultimate data frame 
   view()
-
+#I think here you can use the function:
+dfCOI.V2 <- processDataFrame(dfCOI)
+view(dfCOI.V2)
 #lets merge these 2 data frame together.
 dfmerge <- merge(dfCOI.V2, dfpho.COI.geo, by="species_name", all=F)
 #view the data frame 
@@ -292,22 +341,16 @@ dfCOI.cluster.phylo
 
 #Figure 3 Phylogeny tree on mapping plot 
 ## now we have to merge the data from NCBI and BOLD as there are no data related to GPS or geographical analysis
-#install packages 
-install.packages("phytools")
-#load the package
-library(phytools)
-#install the package
-install.packages("maps")
-#load the package 
-library(maps)
-#loading by library 
-library(mapdata)
+
 #by using keep tip we just want to use tip labels in our figure to match to the spots 
 tree <- keep.tip(dfCOI.cluster.phylo, unique(rownames(dfmerge2)))
 #This R code employs the phylo.to.map function to create a map visualization with a phylogenetic tree (phylogram) overlaid on it. The tree variable represents the phylogenetic tree, and dfmerge2 contains geographic data. It sets the type to "phylogram," avoids tree rotation (rotate = FALSE), and doesn't display the map immediately (plot = FALSE). The resulting map visualization is stored in the objective variable for further examination or plotting if needed.
 objective<- phylo.to.map(tree, dfmerge2, type = "phylogram", rotate = F, plot = F)
 #This R code uses the plot function to create a plot of the map visualization stored in the objective variable. It customizes various aspects of the plot, including the panel split, font size, font type, aspect ratio, line style, background color. 
 plot(objective, split = c(0.5, 0.5), fsize = 0.75, ftype = "i", asp = 1, from.tip = F, lty = "dotted", map.bg = "purple", map.fill = "lightblue", lwd = 1, pts = F, cex.points = 1, delimit_map = T)
+
+
+
 
 
 
