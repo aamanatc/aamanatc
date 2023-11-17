@@ -358,5 +358,4 @@ tree <- keep.tip(dfCOI.cluster.phylo, unique(rownames(dfmerge2)))
 objective<- phylo.to.map(tree, dfmerge2, type = "phylogram", rotate = F, plot = F)
 #This R code uses the plot function to create a plot of the map visualization stored in the objective variable. It customizes various aspects of the plot, including the panel split, font size, font type, aspect ratio, line style, background color. 
 plot(objective, split = c(0.60, 0.45), fsize = 0.5, ftype = "i", asp = 1, from.tip = F, lty = "dotted", map.bg = "purple", map.fill = "lightblue", lwd = 1, pts = F, cex.points = 1, delimit_map = T)
-
 #In order to make your figure more readable and accurate, I encourage you to split the figures in a more logical ratio, like what i change split = c(0.60, 0.45), and also set the fsize equal to 0.5.
