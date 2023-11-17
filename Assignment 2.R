@@ -103,6 +103,7 @@ danio_search <- entrez_search(db="nuccore", term = "Danio[ORGN]")
 #see the quantity of hits 
 danio_search
 
+
 #as COI gene sequences are mostly between 400 to 700, the search needs to be narrow down by the sequence length as well. Also, I put retmax number 100 as I need more than 20 data 
 danio_search.COI <- entrez_search(db="nuccore", term = "Danio[ORGN] AND COI[gene] AND 400:700[SLEN]", retmax=100)
 #see the quantity of the results 
@@ -269,6 +270,15 @@ tree_plot <- ggtree(tree.ape, layout = "circular") +
 # view the tree 
 tree_plot
 
+#In order to make your figure and labels more feasible, you can add the following changes to your previous code:
+tree_plot <- ggtree(tree.ape, layout = "circular") + 
+  theme_tree2(legend.position = "none") +
+  geom_tiplab(align = TRUE, size = 2.5, color = "red", hjust = 2)
+
+# view the tree 
+tree_plot
+
+
 #Next step would be merging data frames from BOLD and NCBI as NCBI doesn't provide data related to GPS(longitude & Latitude )
 #Organizing the data mined by Bold as it is including GPS data 
 #getting data from Bold via API 
@@ -347,13 +357,6 @@ tree <- keep.tip(dfCOI.cluster.phylo, unique(rownames(dfmerge2)))
 #This R code employs the phylo.to.map function to create a map visualization with a phylogenetic tree (phylogram) overlaid on it. The tree variable represents the phylogenetic tree, and dfmerge2 contains geographic data. It sets the type to "phylogram," avoids tree rotation (rotate = FALSE), and doesn't display the map immediately (plot = FALSE). The resulting map visualization is stored in the objective variable for further examination or plotting if needed.
 objective<- phylo.to.map(tree, dfmerge2, type = "phylogram", rotate = F, plot = F)
 #This R code uses the plot function to create a plot of the map visualization stored in the objective variable. It customizes various aspects of the plot, including the panel split, font size, font type, aspect ratio, line style, background color. 
-plot(objective, split = c(0.5, 0.5), fsize = 0.75, ftype = "i", asp = 1, from.tip = F, lty = "dotted", map.bg = "purple", map.fill = "lightblue", lwd = 1, pts = F, cex.points = 1, delimit_map = T)
+plot(objective, split = c(0.60, 0.45), fsize = 0.5, ftype = "i", asp = 1, from.tip = F, lty = "dotted", map.bg = "purple", map.fill = "lightblue", lwd = 1, pts = F, cex.points = 1, delimit_map = T)
 
-
-
-
-
-
-
-
-
+#In order to make your figure more readable and accurate, I encourage you to split the figures in a more logical ratio, like what i change split = c(0.60, 0.45), and also set the fsize equal to 0.5.
